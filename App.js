@@ -3,28 +3,51 @@ import { StyleSheet,Button, View, Text, Image, TextInput,TouchableOpacity,Keyboa
   Linking,
   Dimensions,
   LayoutAnimation,
-  StatusBar} from 'react-native';
+  StatusBar,
+  TouchableNativeFeedback,
+  ImageBackground} from 'react-native';
   import { BarCodeScanner, Permissions } from 'expo';
 import { createStackNavigator } from 'react-navigation'; // Version can be specified in package.json
 
 class HomeScreen extends React.Component {
   render() {
     return (
-      <View style={styles.containers}>
-        <View style={styles.buttonContainer}>
-          <Button
-            onPress={() => this.props.navigation.navigate('Userlogin')}
-            title="User"
-          />
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button
-            onPress={() => this.props.navigation.navigate('Moderatorlogin')}
-            title="Moderator"
-            color="#841584"
-          />
-        </View>
-      </View>
+      	<View style={{flex:1}}>
+		<View style={{flex:1,margin:10,marginBottom:5,borderRadius:5}}>
+		   <TouchableNativeFeedback
+			onPress={() => this.props.navigation.navigate('Userlogin')}
+			background={TouchableNativeFeedback.SelectableBackground()}>
+				   <Image
+					style={{
+						flex:1,
+						justifyContent:'center',
+						alignItems:'center',
+					  width: '100%',
+					  height: '100%',
+					  borderRadius:10
+					}}
+					source={require("./user.jpg")} 
+				  />
+			</TouchableNativeFeedback>
+		</View>
+		 <View style={{flex:1,margin:10,marginTop:5,borderRadius:5}}>
+		   <TouchableNativeFeedback
+			onPress={() => this.props.navigation.navigate('Moderatorlogin')}
+			background={TouchableNativeFeedback.SelectableBackground()}>
+				  <Image
+					style={{
+						flex:1,
+						justifyContent:'center',
+						alignItems:'center',
+					  width: '100%',
+					  height: '100%',
+					  borderRadius:10
+					}}
+					source={require("./moderator.jpg")}
+				  />
+		  </TouchableNativeFeedback>
+		</View>
+	</View>
     );
   }
 }
