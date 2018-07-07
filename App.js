@@ -57,7 +57,8 @@ class UserloginScreen extends React.Component {
     return (
       <KeyboardAvoidingView style={styles.wholeStyle} behavior="padding" enabled>
         <View style={styles.logoContainer}>
-          <Image style={styles.logo} source={require('./panda.jpg')}/>
+        <Image  style={styles.logo} source={require('./Panda.jpg')}/>
+       
           <Text style={styles.logoText}>
             App made for Common people :)
             </Text>
@@ -177,13 +178,24 @@ class ModeratorloginScreen extends React.Component {
 const Loginform = function(){
   return(
     <View style={styles.formContainer}>
-      <TextInput placeholder="Username Or Email" placeholderTextColor="black"style={styles.input}/>
-      <TextInput secureTextEntry placeholder="Password"placeholderTextColor="black"style={styles.input}/>
-      <TouchableOpacity style={styles.buttonsContainer}>
-        <Text style={styles.textContainer}>
+      <Text style={styles.logoHeader}>
+        Email:
+        </Text>
+      <TextInput autoCapitalize="none" label placeholder="Username Or Email" placeholderTextColor="#a7a9aa"style={styles.input}/>
+      <Text style={styles.logoHeader}>
+        Password:
+        </Text>
+      <TextInput  autoCapitalize="none" secureTextEntry placeholder="Password"placeholderTextColor="#a7a9aa"style={styles.input}/>
+      <TouchableOpacity style={styles.buttonsContainerL}>
+        <Text style={styles.textContainerLogin}>
           LOGIN
         </Text>
-        </TouchableOpacity>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.buttonsContainerS}>
+          <Text style={styles.textContainerSignup}>
+            SIGNUP
+          </Text>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -216,17 +228,17 @@ const styles = StyleSheet.create({
   },
   wholeStyle:{
     flex: 1,
-    backgroundColor:'#45aaf2'
+    backgroundColor:'white'
   },
   logoContainer:{
     flex:1,
     alignItems:'center',
     flexGrow: 1,
-    justifyContent:'center'
+    justifyContent:'center',
   },
   logo:{
-    width:100,
-    height: 100
+    width:120,
+    height: 120
   },
   logoText:{
     color:'black',
@@ -235,23 +247,44 @@ const styles = StyleSheet.create({
     marginTop:20,
    
   },
+  logoHeader:{
+    fontSize:17,
+    fontWeight:'400'
+  },
   input:{
     height:40,
-    backgroundColor:'#76c4f2',
+    backgroundColor:'white',
     marginBottom:20,
     color:'black'
   },
   formContainer:{
-    padding:50
+    padding:30
   },
-  buttonsContainer:{
-    backgroundColor:'#297fb2'
+  buttonsContainerS:{
+    backgroundColor:'#0299f7',
+    borderRadius:6,
+    height:50
   },
-  textContainer:{
+  buttonsContainerL:{
+    backgroundColor:'#0299f7',
+    marginBottom:10,
+    marginTop:10,
+    height:50,
+    borderRadius:6,
+  },
+  textContainerLogin:{
     textAlign:'center',
     color:'white',
     fontSize:20,
-    fontWeight:'700'
+    fontWeight:'100',
+    marginTop:10
+  },
+  textContainerSignup:{
+    textAlign:'center',
+    color:'white',
+    fontSize:20,
+    fontWeight:'100',
+    marginTop:10
   },
   container: {
     justifyContent: 'center',
