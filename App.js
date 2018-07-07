@@ -57,7 +57,7 @@ class UserloginScreen extends React.Component {
     return (
       <KeyboardAvoidingView style={styles.wholeStyle} behavior="padding" enabled>
         <View style={styles.logoContainer}>
-        <Image  style={styles.logo} source={require('./Panda.jpg')}/>
+        <Image  style={styles.logo} source={require('./logo.jpg')}/>
        
           <Text style={styles.logoText}>
             App made for Common people :)
