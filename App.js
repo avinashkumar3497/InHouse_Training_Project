@@ -6,7 +6,8 @@ import { StyleSheet,Button, View, Text, Image, TextInput,TouchableOpacity,Keyboa
   StatusBar,
   TouchableNativeFeedback,
   ImageBackground} from 'react-native';
-  import { BarCodeScanner, Permissions } from 'expo';
+import { BarCodeScanner, Permissions } from 'expo';
+import firebase from 'firebase';
 import { createStackNavigator } from 'react-navigation'; // Version can be specified in package.json
 
 class HomeScreen extends React.Component {
@@ -176,24 +177,45 @@ class ModeratorloginScreen extends React.Component {
 }
 
 class Loginform extends React.Component{
+constructor(props){
+  super(props)
+  this.state={ email:'',password:'',error:''}
+  this.loginPress=this.loginPress.bind(this);
+  this.signupPress=this.signupPress.bind(this);
+}
 
+loginPress(){
+  const { email , password}= this.state;
+  firebase.auth().signInWithEmailAndPassword(email,password)    
+  .catch(()=>{
+    alert('You don\'t have an Account')
+  })
+}
+signupPress(){
+  const { email , password}= this.state;
+  firebase.auth().createUserWithEmailAndPassword(email,password)
+  
+}
  render(){
     return(
       <View style={styles.formContainer}>
         <Text style={styles.logoHeader}>
           Email:
           </Text>
-        <TextInput  autoCapitalize="none" label placeholder="Username Or Email" placeholderTextColor="#a7a9aa"style={styles.input}/>
+        <TextInput value={this.state.email} onChangeText={( email ) => this.setState({ email })} autoCapitalize="none" label placeholder="Username Or Email" placeholderTextColor="#a7a9aa"style={styles.input}/>
         <Text style={styles.logoHeader}>
           Password:
           </Text>
-        <TextInput  autoCapitalize="none" secureTextEntry placeholder="Password"placeholderTextColor="#a7a9aa"style={styles.input}/>
-        <TouchableOpacity style={styles.buttonsContainerL}>
+        <TextInput value={this.state.password} onChangeText={( password ) => this.setState({ password })} autoCapitalize="none" secureTextEntry placeholder="Password"placeholderTextColor="#a7a9aa"style={styles.input}/>
+        <Text>
+          {this.state.error}
+          </Text>
+        <TouchableOpacity onPress={this.loginPress} style={styles.buttonsContainerL}>
           <Text style={styles.textContainerLogin}>
             LOGIN
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonsContainerS}>
+        <TouchableOpacity onPress={ this.signupPress} style={styles.buttonsContainerS}>
             <Text style={styles.textContainerSignup}>
               SIGNUP
             </Text>
@@ -202,6 +224,7 @@ class Loginform extends React.Component{
     )
   }
 }
+
 
 const RootStack = createStackNavigator(
   {
@@ -216,7 +239,17 @@ const RootStack = createStackNavigator(
 );
 
 export default class App extends React.Component {
-  render() {
+  
+componentWillMount(){
+    firebase.initializeApp({
+      apiKey: "AIzaSyCPoCZyB4xLU_Z6o4pYd1QEuUZweHLwwvI",
+      authDomain: "inhouseshit.firebaseapp.com",
+      databaseURL: "https://inhouseshit.firebaseio.com",
+      projectId: "inhouseshit",
+      storageBucket: "inhouseshit.appspot.com",
+      messagingSenderId: "114660561267"
+    });
+  }render() {
     return <RootStack />;
   }
 }
