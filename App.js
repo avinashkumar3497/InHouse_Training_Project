@@ -175,29 +175,32 @@ class ModeratorloginScreen extends React.Component {
   };
 }
 
-const Loginform = function(){
-  return(
-    <View style={styles.formContainer}>
-      <Text style={styles.logoHeader}>
-        Email:
-        </Text>
-      <TextInput autoCapitalize="none" label placeholder="Username Or Email" placeholderTextColor="#a7a9aa"style={styles.input}/>
-      <Text style={styles.logoHeader}>
-        Password:
-        </Text>
-      <TextInput  autoCapitalize="none" secureTextEntry placeholder="Password"placeholderTextColor="#a7a9aa"style={styles.input}/>
-      <TouchableOpacity style={styles.buttonsContainerL}>
-        <Text style={styles.textContainerLogin}>
-          LOGIN
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonsContainerS}>
-          <Text style={styles.textContainerSignup}>
-            SIGNUP
+class Loginform extends React.Component{
+
+ render(){
+    return(
+      <View style={styles.formContainer}>
+        <Text style={styles.logoHeader}>
+          Email:
           </Text>
-      </TouchableOpacity>
-    </View>
-  )
+        <TextInput  autoCapitalize="none" label placeholder="Username Or Email" placeholderTextColor="#a7a9aa"style={styles.input}/>
+        <Text style={styles.logoHeader}>
+          Password:
+          </Text>
+        <TextInput  autoCapitalize="none" secureTextEntry placeholder="Password"placeholderTextColor="#a7a9aa"style={styles.input}/>
+        <TouchableOpacity style={styles.buttonsContainerL}>
+          <Text style={styles.textContainerLogin}>
+            LOGIN
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonsContainerS}>
+            <Text style={styles.textContainerSignup}>
+              SIGNUP
+            </Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
 }
 
 const RootStack = createStackNavigator(
@@ -237,7 +240,7 @@ const styles = StyleSheet.create({
     justifyContent:'center',
   },
   logo:{
-    width:120,
+    width:250,
     height: 120
   },
   logoText:{
