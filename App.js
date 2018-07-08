@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     justifyContent:'center',
   },
   logo:{
-    width:250,
+    width:120,
     height: 120
   },
   logoText:{
