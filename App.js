@@ -71,110 +71,144 @@ class UserloginScreen extends React.Component {
     );
   }
 }
-
-class ModeratorloginScreen extends React.Component {
-	state = {
-    hasCameraPermission: null,
-    lastScannedUrl: null,
-  };
-
-  componentDidMount() {
-    this._requestCameraPermission();
-  }
-
-  _requestCameraPermission = async () => {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({
-      hasCameraPermission: status === 'granted',
-    });
-  };
-
-  _handleBarCodeRead = result => {
-    if (result.data !== this.state.lastScannedUrl) {
-      LayoutAnimation.spring();
-      this.setState({ lastScannedUrl: result.data });
+class SigninForm extends React.Component{
+  constructor(props){
+    super(props)
+    this.state={ email:'',password:'',error:''}
     }
-  };
-  render() {
-    return (
-      <View style={styles.container}>
-
-        {this.state.hasCameraPermission === null
-          ? <Text>Requesting for camera permission</Text>
-          : this.state.hasCameraPermission === false
-              ? <Text style={{ color: '#fff' }}>
-                  Camera permission is not granted
-                </Text>
-              : <BarCodeScanner
-                  onBarCodeRead={this._handleBarCodeRead}
-                  style={{
-                    height: 300,
-                    width: 300,
-                  }}
-
-                />}
-
-        {this._maybeRenderUrl()}
-
-        <StatusBar hidden />
-        <Text> -----------OR-----------</Text>
-         <TextInput
-                    style={
-                      {
-                        alignItems: 'center',
-                        height: 50,
-                        width:300,
-                        justifyContent: 'space-between',
-                        fontSize: 18
-                      }
-                    }
-                    placeholder='Enter Driving License Number'
-                    />
+  
+  render(){
+    return(
+      <KeyboardAvoidingView  style={styles.wholeStyle} behavior="padding" enabled >
+      <View style={styles.logoContainer}>
+        <Image  style={styles.logo} source={require('./logo.png')}/>
       </View>
-    );
-  }
-    _handlePressUrl = () => {
-    Alert.alert(
-      'Open this URL?',
-      this.state.lastScannedUrl,
-      [
-        {
-          text: 'Yes',
-          onPress: () => Linking.openURL(this.state.lastScannedUrl),
-        },
-        { text: 'No', onPress: () => {} },
-      ],
-      { cancellable: false }
-    );
-  };
-
-  _handlePressCancel = () => {
-    this.setState({ lastScannedUrl: null });
-  };
-
-  _maybeRenderUrl = () => {
-    if (!this.state.lastScannedUrl) {
-      return;
-    }
-
-    return (
-      <View style={styles.bottomBar}>
-        <TouchableOpacity style={styles.url} onPress={this._handlePressUrl}>
-          <Text numberOfLines={1} style={styles.urlText}>
-            {this.state.lastScannedUrl}
+      <View style={styles.formContainer}>
+          <Text >
+            Email:
+          </Text>
+          <TextInput placeholder='user@abc.com' value={this.state.email} onChangeText={( email ) => this.setState({ email })} autoCapitalize="none" placeholderTextColor="#a7a9aa" style={styles.input}/>
+          <Text style={styles.logoHeader}>
+            Password:
+          </Text>
+          <TextInput placeholder='Enter Your Password Here' value={this.state.password} onChangeText={( password ) => this.setState({ password })} autoCapitalize="none" placeholderTextColor="#a7a9aa" style={styles.input}/>
+          <Text>
+          {this.state.error}
+          </Text>
+        <TouchableOpacity onPress={this.signinPress} style={styles.buttonsContainerL}>
+          <Text style={styles.textContainerLogin}>
+            SIGN IN
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.cancelButton}
-          onPress={this._handlePressCancel}>
-          <Text style={styles.cancelButtonText}>
-            Cancel
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
+        </View>
+    </KeyboardAvoidingView>
+    )
+  }
 }
+
+// class ModeratorloginScreen extends React.Component {
+// 	state = {
+//     hasCameraPermission: null,
+//     lastScannedUrl: null,
+//   };
+
+//   componentDidMount() {
+//     this._requestCameraPermission();
+//   }
+
+//   _requestCameraPermission = async () => {
+//     const { status } = await Permissions.askAsync(Permissions.CAMERA);
+//     this.setState({
+//       hasCameraPermission: status === 'granted',
+//     });
+//   };
+
+//   _handleBarCodeRead = result => {
+//     if (result.data !== this.state.lastScannedUrl) {
+//       LayoutAnimation.spring();
+//       this.setState({ lastScannedUrl: result.data });
+//     }
+//   };
+//   render() {
+//     return (
+//       <View style={styles.container}>
+
+//         {this.state.hasCameraPermission === null
+//           ? <Text>Requesting for camera permission</Text>
+//           : this.state.hasCameraPermission === false
+//               ? <Text style={{ color: '#fff' }}>
+//                   Camera permission is not granted
+//                 </Text>
+//               : <BarCodeScanner
+//                   onBarCodeRead={this._handleBarCodeRead}
+//                   style={{
+//                     height: 300,
+//                     width: 300,
+//                   }}
+
+//                 />}
+
+//         {this._maybeRenderUrl()}
+
+//         <StatusBar hidden />
+//         <Text> -----------OR-----------</Text>
+//          <TextInput
+//                     style={
+//                       {
+//                         alignItems: 'center',
+//                         height: 50,
+//                         width:300,
+//                         justifyContent: 'space-between',
+//                         fontSize: 18
+//                       }
+//                     }
+//                     placeholder='Enter Driving License Number'
+//                     />
+//       </View>
+//     );
+//   }
+//     _handlePressUrl = () => {
+//     Alert.alert(
+//       'Open this URL?',
+//       this.state.lastScannedUrl,
+//       [
+//         {
+//           text: 'Yes',
+//           onPress: () => Linking.openURL(this.state.lastScannedUrl),
+//         },
+//         { text: 'No', onPress: () => {} },
+//       ],
+//       { cancellable: false }
+//     );
+//   };
+
+//   _handlePressCancel = () => {
+//     this.setState({ lastScannedUrl: null });
+//   };
+
+//   _maybeRenderUrl = () => {
+//     if (!this.state.lastScannedUrl) {
+//       return;
+//     }
+
+//     return (
+//       <View style={styles.bottomBar}>
+//         <TouchableOpacity style={styles.url} onPress={this._handlePressUrl}>
+//           <Text numberOfLines={1} style={styles.urlText}>
+//             {this.state.lastScannedUrl}
+//           </Text>
+//         </TouchableOpacity>
+//         <TouchableOpacity
+//           style={styles.cancelButton}
+//           onPress={this._handlePressCancel}>
+//           <Text style={styles.cancelButtonText}>
+//             Cancel
+//           </Text>
+//         </TouchableOpacity>
+//       </View>
+//     );
+//   };
+// }
 
 class Loginform extends React.Component{
 constructor(props){
@@ -231,7 +265,7 @@ const RootStack = createStackNavigator(
     Home:{ screen:HomeScreen,
 	navigationOptions: () => ({title: 'Who are you:',})},	//for title seen createStackNavigator guide
     Userlogin: UserloginScreen,
-	Moderatorlogin: ModeratorloginScreen
+	Moderatorlogin: SigninForm
   },
   {
     initialRouteName: 'Home',
