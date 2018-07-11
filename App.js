@@ -128,9 +128,12 @@ constructor(props){
 
 loginPress(){
   const { email , password}= this.state;
-  firebase.auth().signInWithEmailAndPassword(email,password).catch(()=>{
-    alert('You don\'t have an Account')
-  })
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .catch(function(error) {
+  // Handle Errors here.
+    alert(error.message);
+  }
+);
 }
 signupPress(){
   const { email , password}= this.state;
