@@ -12,12 +12,12 @@ import { createStackNavigator } from 'react-navigation'; // Version can be speci
 
   // Initialize Firebase
   var config = {
-    apiKey: "AIzaSyBTHmLkEQPe5wwE2xNK0QEndhcGQvPXRBo",
-    authDomain: "inhousetrainingproject.firebaseapp.com",
-    databaseURL: "https://inhousetrainingproject.firebaseio.com",
-    projectId: "inhousetrainingproject",
-    storageBucket: "inhousetrainingproject.appspot.com",
-    messagingSenderId: "525156008529"
+    apiKey: "AIzaSyAoBBxyHAD9ybMAFCuq1xmY2jEMd85HBws",
+     authDomain: "react-native-test-aadf2.firebaseapp.com",
+     databaseURL: "https://react-native-test-aadf2.firebaseio.com",
+     projectId: "react-native-test-aadf2",
+     storageBucket: "react-native-test-aadf2.appspot.com",
+     messagingSenderId: "394801777420"
   };
   //firebase.initializeApp(config);
   //!firebase.apps.length ? firebase.initializeApp(config) : firebase.app();
@@ -39,7 +39,7 @@ class HomeScreen extends React.Component {
 					  height: '100%',
 					  borderRadius:10
 					}}
-					source={require("./user.jpg")} 
+					source={require("./user.jpg")}
 				  />
 			</TouchableNativeFeedback>
 		</View>
@@ -64,6 +64,19 @@ class HomeScreen extends React.Component {
     );
   }
 }
+class Main extends React.Component {
+  state = { currentUser: null }
+render() {
+    const { currentUser } = this.state
+return (
+      <View style={styles.container}>
+        <Text>
+          Hi {currentUser.email}!
+        </Text>
+      </View>
+    )
+  }
+}
 
 class UserloginScreen extends React.Component {
   render() {
@@ -71,7 +84,7 @@ class UserloginScreen extends React.Component {
       <KeyboardAvoidingView style={styles.wholeStyle} behavior="padding" enabled>
         <View style={styles.logoContainer}>
         <Image  style={styles.logo} source={require('./logo.png')}/>
-       
+
           <Text style={styles.logoText}>
             App made for Common people :)
             </Text>
@@ -87,18 +100,7 @@ class SigninForm extends React.Component{
   constructor(props){
     super(props)
     this.state={ email:'',password:'',error:''}
-    this.signinPress=this.signinPress.bind(this);
     }
-  
-    signinPress(){
-  const { email , password}= this.state;
-  firebase.auth().signInWithEmailAndPassword(email, password)
-    .catch(function(error) {
-  // Handle Errors here.
-    alert(error.message);
-  }
-);
-}
 
   render(){
     return(
@@ -110,7 +112,7 @@ class SigninForm extends React.Component{
           <Text >
             Email:
           </Text>
-          <TextInput placeholder='Enter Your Email Here' value={this.state.email} onChangeText={( email ) => this.setState({ email })} autoCapitalize="none" placeholderTextColor="#a7a9aa" style={styles.input}/>
+          <TextInput placeholder='user@abc.com' value={this.state.email} onChangeText={( email ) => this.setState({ email })} autoCapitalize="none" placeholderTextColor="#a7a9aa" style={styles.input}/>
           <Text style={styles.logoHeader}>
             Password:
           </Text>
@@ -138,27 +140,16 @@ constructor(props){
 }
 
 loginPress(){
-  const { email , password}= this.state;
-  firebase.auth().signInWithEmailAndPassword(email, password)
-    .catch(function(error) {
-  // Handle Errors here.
-    alert(error.message);
-  }
-);
+  const { email, password } = this.state
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then(() => this.props.navigation.navigate('mainscreen'))
+      .catch(error => this.setState({ error: error.message }))
 }
 signupPress(){
   const { email , password}= this.state;
-  //firebase.auth().createUserWithEmailAndPassword(email,password)
-  
-
-firebase.auth().createUserWithEmailAndPassword(email, password)
-    .catch(function(error) {
-  // Handle Errors here.
-
-    alert(error.message);
-  }
-);
-
+  firebase.auth().createUserWithEmailAndPassword(email,password)
 
 }
  render(){
@@ -167,11 +158,11 @@ firebase.auth().createUserWithEmailAndPassword(email, password)
         <Text style={styles.logoHeader}>
           Email:
           </Text>
-        <TextInput value={this.state.email} onChangeText={( email ) => this.setState({ email })} autoCapitalize="none" label placeholder="Enter Your Email Here" placeholderTextColor="#a7a9aa"style={styles.input}/>
+        <TextInput value={this.state.email} onChangeText={( email ) => this.setState({ email })} autoCapitalize="none" label placeholder="Username Or Email" placeholderTextColor="#a7a9aa"style={styles.input}/>
         <Text style={styles.logoHeader}>
           Password:
           </Text>
-        <TextInput value={this.state.password} onChangeText={( password ) => this.setState({ password })} autoCapitalize="none" secureTextEntry placeholder="Enter Your Password Here"placeholderTextColor="#a7a9aa"style={styles.input}/>
+        <TextInput value={this.state.password} onChangeText={( password ) => this.setState({ password })} autoCapitalize="none" secureTextEntry placeholder="Password"placeholderTextColor="#a7a9aa"style={styles.input}/>
         <Text>
           {this.state.error}
           </Text>
@@ -196,7 +187,8 @@ const RootStack = createStackNavigator(
     Home:{ screen:HomeScreen,
 	navigationOptions: () => ({title: 'Who are you:',})},	//for title seen createStackNavigator guide
     Userlogin: UserloginScreen,
-	Moderatorlogin: SigninForm
+	Moderatorlogin: SigninForm,
+  mainscreen: Main
   },
   {
     initialRouteName: 'Home',
@@ -230,7 +222,7 @@ const styles = StyleSheet.create({
     width:150,
     textAlign:'center',
     marginTop:20,
-   
+
   },
   logoHeader:{
     fontSize:17,
