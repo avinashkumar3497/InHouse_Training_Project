@@ -87,8 +87,19 @@ class SigninForm extends React.Component{
   constructor(props){
     super(props)
     this.state={ email:'',password:'',error:''}
+    this.signinPress=this.signinPress.bind(this);
     }
   
+    signinPress(){
+  const { email , password}= this.state;
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .catch(function(error) {
+  // Handle Errors here.
+    alert(error.message);
+  }
+);
+}
+
   render(){
     return(
       <KeyboardAvoidingView  style={styles.wholeStyle} behavior="padding" enabled >
