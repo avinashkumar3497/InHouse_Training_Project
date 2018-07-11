@@ -10,6 +10,18 @@ import { BarCodeScanner, Permissions } from 'expo';
 import firebase from 'firebase';
 import { createStackNavigator } from 'react-navigation'; // Version can be specified in package.json
 
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBTHmLkEQPe5wwE2xNK0QEndhcGQvPXRBo",
+    authDomain: "inhousetrainingproject.firebaseapp.com",
+    databaseURL: "https://inhousetrainingproject.firebaseio.com",
+    projectId: "inhousetrainingproject",
+    storageBucket: "inhousetrainingproject.appspot.com",
+    messagingSenderId: "525156008529"
+  };
+  //firebase.initializeApp(config);
+  //!firebase.apps.length ? firebase.initializeApp(config) : firebase.app();
+
 class HomeScreen extends React.Component {
   render() {
     return (
@@ -273,17 +285,8 @@ const RootStack = createStackNavigator(
 );
 
 export default class App extends React.Component {
-  
-componentWillMount(){
-    firebase.initializeApp({
-      apiKey: "AIzaSyCPoCZyB4xLU_Z6o4pYd1QEuUZweHLwwvI",
-      authDomain: "inhouseshit.firebaseapp.com",
-      databaseURL: "https://inhouseshit.firebaseio.com",
-      projectId: "inhouseshit",
-      storageBucket: "inhouseshit.appspot.com",
-      messagingSenderId: "114660561267"
-    });
-  }render() {
+  render() {
+    !firebase.apps.length ? firebase.initializeApp(config) : firebase.app();
     return <RootStack />;
   }
 }
