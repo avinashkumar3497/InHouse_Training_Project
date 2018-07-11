@@ -110,7 +110,7 @@ class SigninForm extends React.Component{
           <Text >
             Email:
           </Text>
-          <TextInput placeholder='user@abc.com' value={this.state.email} onChangeText={( email ) => this.setState({ email })} autoCapitalize="none" placeholderTextColor="#a7a9aa" style={styles.input}/>
+          <TextInput placeholder='Enter Your Email Here' value={this.state.email} onChangeText={( email ) => this.setState({ email })} autoCapitalize="none" placeholderTextColor="#a7a9aa" style={styles.input}/>
           <Text style={styles.logoHeader}>
             Password:
           </Text>
@@ -167,11 +167,11 @@ firebase.auth().createUserWithEmailAndPassword(email, password)
         <Text style={styles.logoHeader}>
           Email:
           </Text>
-        <TextInput value={this.state.email} onChangeText={( email ) => this.setState({ email })} autoCapitalize="none" label placeholder="Username Or Email" placeholderTextColor="#a7a9aa"style={styles.input}/>
+        <TextInput value={this.state.email} onChangeText={( email ) => this.setState({ email })} autoCapitalize="none" label placeholder="Enter Your Email Here" placeholderTextColor="#a7a9aa"style={styles.input}/>
         <Text style={styles.logoHeader}>
           Password:
           </Text>
-        <TextInput value={this.state.password} onChangeText={( password ) => this.setState({ password })} autoCapitalize="none" secureTextEntry placeholder="Password"placeholderTextColor="#a7a9aa"style={styles.input}/>
+        <TextInput value={this.state.password} onChangeText={( password ) => this.setState({ password })} autoCapitalize="none" secureTextEntry placeholder="Enter Your Password Here"placeholderTextColor="#a7a9aa"style={styles.input}/>
         <Text>
           {this.state.error}
           </Text>
