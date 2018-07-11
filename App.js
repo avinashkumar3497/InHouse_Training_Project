@@ -156,9 +156,19 @@ firebase.auth().createUserWithEmailAndPassword(email, password)
   // Handle Errors here.
 
     alert(error.message);
-  }
-);
+  });
 
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    firebase.database().ref('users/' + user.uid).set({
+    mobile:'unavailable',
+    licence:'unavailable',
+    vehicle_number:'unavailable',
+rc:'http://184ynl3xrypi2ruscv1a607s.wpengine.netdna-cdn.com/wp-content/uploads/2011/07/Picture-351.png',
+pollution:'http://184ynl3xrypi2ruscv1a607s.wpengine.netdna-cdn.com/wp-content/uploads/2011/07/Picture-351.png'
+  });
+  }
+});
 
 }
  render(){
