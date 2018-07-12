@@ -5,7 +5,9 @@ import { StyleSheet,Button, View, Text, Image, TextInput,TouchableOpacity,Keyboa
   LayoutAnimation,
   StatusBar,
   TouchableNativeFeedback,
-  ImageBackground} from 'react-native';
+  ImageBackground,
+  InteractionManager,
+  ScrollView} from 'react-native';
 import { BarCodeScanner, Permissions } from 'expo';
 import firebase from 'firebase';
 import { createStackNavigator } from 'react-navigation'; // Version can be specified in package.json
@@ -21,6 +23,8 @@ import { createStackNavigator } from 'react-navigation'; // Version can be speci
   };
   //firebase.initializeApp(config);
   //!firebase.apps.length ? firebase.initializeApp(config) : firebase.app();
+
+  var mob='null',lic='null',veh='null',rcdoc='null',pol='null';
 
 class HomeScreen extends React.Component {
   render() {
@@ -65,24 +69,6 @@ class HomeScreen extends React.Component {
   }
 }
 
-class UserloginScreen extends React.Component {
-  render() {
-    return (
-      <KeyboardAvoidingView style={styles.wholeStyle} behavior="padding" enabled>
-        <View style={styles.logoContainer}>
-        <Image  style={styles.logo} source={require('./logo.png')}/>
-       
-          <Text style={styles.logoText}>
-            App made for Common people :)
-            </Text>
-        </View>
-        <View style={styles.formContainer}>
-            <Loginform/>
-          </View>
-      </KeyboardAvoidingView>
-    );
-  }
-}
 class SigninForm extends React.Component{
   constructor(props){
     super(props)
@@ -129,8 +115,96 @@ class SigninForm extends React.Component{
   }
 }
 
-class Loginform extends React.Component{
-constructor(props){
+var user;
+
+class UserLoggedInScreen extends React.Component {
+
+   constructor(props){
+     super(props)
+     this.state={ mob:'',lic:'',veh:'',rcdoc:'',pol:'',error:''}
+  //   //this.signinPress=this.signinPress.bind(this);
+     }
+
+  render() {
+
+    
+user = firebase.auth().currentUser;
+firebase.database().ref('users/' + user.uid + '/mobile').on('value', function(snapshot) {
+  mob=snapshot.val();
+});
+
+firebase.database().ref('users/' + user.uid + '/licence').on('value', function(snapshot) {
+  lic=snapshot.val();
+});
+
+firebase.database().ref('users/' + user.uid + '/vehicle_number').on('value', function(snapshot) {
+  veh=snapshot.val();
+});
+
+firebase.database().ref('users/' + user.uid + '/rc').on('value', function(snapshot) {
+  rcdoc=snapshot.val();
+});
+
+firebase.database().ref('users/' + user.uid + '/pollution').on('value', function(snapshot) {
+  pol=snapshot.val();
+});
+
+
+
+    return (
+      <ScrollView style={styles.container}>
+      <Text style={styles.Heading}>
+          YOUR UPLOADS
+          </Text>
+<Text style={styles.SubHeading}>
+         Mobile Number:
+        </Text>
+        <TextInput defaultValue={mob} style={styles.intake} />
+        <Text style={styles.SubHeading}>
+         Licence Number:
+        </Text>
+        <TextInput defaultValue={lic} style={styles.intake} />
+         <Text style={styles.SubHeading}>
+         Vehicle Number:
+        </Text>
+        <TextInput defaultValue={veh} style={styles.intake} />
+        <Text style={styles.SubHeading}>
+         RC:
+        </Text>
+        <Image 
+          style={{width: '100%',height:500, resizeMode:'contain'}}
+          source={{uri: rcdoc}}/>
+          <Text style={styles.SubHeading}>
+         Pollution:
+        </Text>
+        <Image 
+          style={{width: '100%',height:500, resizeMode:'contain'}}
+          source={{uri: pol}}/>
+        
+        <Button
+          onPress={
+            function writeUserData(mob,lic,veh,rcdoc,pol) {
+  firebase.database().ref('users/' + user.uid).set({
+
+    mobile:mob,
+    licence:lic,
+    vehicle_number:veh,
+    pollution:pol,
+    rc:rcdoc
+  });
+}
+          }
+          title="EDIT/UPDATE"
+          color="#841584"
+        />
+
+        </ScrollView>
+    );
+  }
+}
+
+class UserloginScreen extends React.Component {
+  constructor(props){
   super(props)
   this.state={ email:'',password:'',error:''}
   this.loginPress=this.loginPress.bind(this);
@@ -145,7 +219,10 @@ loginPress(){
     alert(error.message);
   }
 );
+
+this.props.navigation.push('Userloggedin')
 }
+
 signupPress(){
   const { email , password}= this.state;
   //firebase.auth().createUserWithEmailAndPassword(email,password)
@@ -171,9 +248,19 @@ pollution:'http://184ynl3xrypi2ruscv1a607s.wpengine.netdna-cdn.com/wp-content/up
 });
 
 }
- render(){
-    return(
-      <View style={styles.formContainer}>
+  render() {
+    
+    return (
+      <KeyboardAvoidingView style={styles.wholeStyle} behavior="padding" enabled>
+        <View style={styles.logoContainer}>
+        <Image  style={styles.logo} source={require('./logo.png')}/>
+       
+          <Text style={styles.logoText}>
+            App made for Common people :)
+            </Text>
+        </View>
+        <View style={styles.formContainer}>
+            <View style={styles.formContainer}>
         <Text style={styles.logoHeader}>
           Email:
           </Text>
@@ -196,17 +283,20 @@ pollution:'http://184ynl3xrypi2ruscv1a607s.wpengine.netdna-cdn.com/wp-content/up
             </Text>
         </TouchableOpacity>
       </View>
-    )
+          </View>
+      </KeyboardAvoidingView>
+    );
   }
 }
 
 
+
 const RootStack = createStackNavigator(
   {
-    Home:{ screen:HomeScreen,
-	navigationOptions: () => ({title: 'Who are you:',})},	//for title seen createStackNavigator guide
+    Home: HomeScreen,
     Userlogin: UserloginScreen,
-	Moderatorlogin: SigninForm
+    Userloggedin:UserLoggedInScreen,
+    Moderatorlogin:SigninForm
   },
   {
     initialRouteName: 'Home',
@@ -221,6 +311,19 @@ export default class App extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  SubHeading:{
+    color:'black',
+    width:250,
+    marginTop:20,
+    fontSize:20
+  },
+  Heading:{
+    color:'#26C6DA',
+    width:250,
+    marginTop:10,
+    fontSize:30,
+    fontWeight:'bold'
+  },
   wholeStyle:{
     flex: 1,
     backgroundColor:'white'
@@ -241,6 +344,12 @@ const styles = StyleSheet.create({
     textAlign:'center',
     marginTop:20,
    
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    marginTop:10,
+    padding:10
   },
   logoHeader:{
     fontSize:17,
