@@ -163,7 +163,7 @@ class SigninForm extends React.Component{
   }
 );
 
-this.props.navigation.push('Moderatorloggedin')
+this.props.navigation.navigate('Moderatorloggedin')
 
 }
 
@@ -322,16 +322,9 @@ loginPress(){
 
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
-    this.props.navigation.push('Userloggedin')
+    this.props.navigation.navigate('Userloggedin')
   }});
 }
-//this.props.navigation.push('Userloggedin')
-// firebase.auth().onAuthStateChanged(user => {
-//       this.props.navigation.navigate(user ? 'Main' : 'SignUp')
-//     })
-//   }
-// }
-
 
 signupPress(){
   const { email , password}= this.state;
