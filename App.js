@@ -7,10 +7,14 @@ import { StyleSheet,Button, View, Text, Image, TextInput,TouchableOpacity,Keyboa
   TouchableNativeFeedback,
   ImageBackground,
   InteractionManager,
-  ScrollView} from 'react-native';
+  ScrollView,
+   ActivityIndicator,
+  Clipboard,
+  Share} from 'react-native';
 import { BarCodeScanner, Permissions } from 'expo';
 import firebase from 'firebase';
 import { createStackNavigator } from 'react-navigation'; // Version can be specified in package.json
+import Exponent, { Constants, ImagePicker, registerRootComponent } from 'expo';
 
   // Initialize Firebase
   var config = {
@@ -24,7 +28,7 @@ import { createStackNavigator } from 'react-navigation'; // Version can be speci
   //firebase.initializeApp(config);
   //!firebase.apps.length ? firebase.initializeApp(config) : firebase.app();
 
-  var mob='null',lic='null',veh='null',rcdoc='null',pol='null';
+  var mob='null',lic='null',veh='null',rcdoc='null',pol='null',userid='';
 
 class HomeScreen extends React.Component {
   render() {
@@ -69,6 +73,79 @@ class HomeScreen extends React.Component {
   }
 }
 
+class ModeratorloggedinScreen extends React.Component {
+    constructor(props){
+    super(props)
+    this.state={ usid:''}
+    //this.signinPress=this.signinPress.bind(this);
+    }
+  render() {
+    return (
+      	<View>
+<Text style={styles.SubHeading}>
+         Enter User ID:
+        </Text>
+        <TextInput onChangeText={(usid) => this.setState({usid})} value={this.state.usid} placeholder='Enter User ID' placeholderTextColor="#a7a9aa" style={styles.intake} />
+        <Button title='Inspect' onPress={()=>{
+          userid=this.state.usid;
+          this.props.navigation.navigate('Usertomod')
+        }}/>
+</View>
+    );
+  }
+}
+
+class UserToModDetail extends React.Component{
+  render(){
+    firebase.database().ref('users/' + userid + '/mobile').on('value', function(snapshot) {
+  mob=snapshot.val();
+});
+
+firebase.database().ref('users/' + userid + '/licence').on('value', function(snapshot) {
+  lic=snapshot.val();
+});
+
+firebase.database().ref('users/' + userid + '/vehicle_number').on('value', function(snapshot) {
+  veh=snapshot.val();
+});
+
+firebase.database().ref('users/' + userid + '/rc').on('value', function(snapshot) {
+  rcdoc=snapshot.val();
+});
+
+firebase.database().ref('users/' + userid + '/pollution').on('value', function(snapshot) {
+  pol=snapshot.val();
+});
+
+    return(
+      <ScrollView>
+        <Text style={styles.SubHeading}>
+         Mobile Number:{mob}
+        </Text>
+        <Text style={styles.SubHeading}>
+         Licence Number:{lic}
+        </Text>
+        <Text style={styles.SubHeading}>
+         Vehicle Number:{veh}
+        </Text>
+        <Text style={styles.SubHeading}>
+         RC:
+        </Text>
+        <Image 
+          style={{width: '100%',height:500, resizeMode:'contain'}}
+          source={{uri: rcdoc}}/>
+          <Text style={styles.SubHeading}>
+         Pollution:
+        </Text>
+        <Image 
+          style={{width: '100%',height:500, resizeMode:'contain'}}
+          source={{uri: pol}}/>
+        
+      </ScrollView>
+    )
+  }
+}
+
 class SigninForm extends React.Component{
   constructor(props){
     super(props)
@@ -84,6 +161,9 @@ class SigninForm extends React.Component{
     alert(error.message);
   }
 );
+
+this.props.navigation.push('Moderatorloggedin')
+
 }
 
   render(){
@@ -115,39 +195,41 @@ class SigninForm extends React.Component{
   }
 }
 
-var user;
+var usar;
 
 class UserLoggedInScreen extends React.Component {
 
    constructor(props){
      super(props)
-     this.state={ mob:'',lic:'',veh:'',rcdoc:'',pol:'',error:''}
+
+usar = firebase.auth().currentUser;
+firebase.database().ref('users/' + usar.uid + '/mobile').on('value', function(snapshot) {
+  mob=snapshot.val();
+});
+
+firebase.database().ref('users/' + usar.uid + '/licence').on('value', function(snapshot) {
+  lic=snapshot.val();
+});
+
+firebase.database().ref('users/' + usar.uid + '/vehicle_number').on('value', function(snapshot) {
+  veh=snapshot.val();
+});
+
+firebase.database().ref('users/' + usar.uid + '/rc').on('value', function(snapshot) {
+  rcdoc=snapshot.val();
+});
+
+firebase.database().ref('users/' + usar.uid + '/pollution').on('value', function(snapshot) {
+  pol=snapshot.val();
+});
+     this.state={ mobs:mob,lics:'',vehs:'',rcdocs:'',pols:'',error:''}
   //   //this.signinPress=this.signinPress.bind(this);
      }
 
   render() {
 
     
-user = firebase.auth().currentUser;
-firebase.database().ref('users/' + user.uid + '/mobile').on('value', function(snapshot) {
-  mob=snapshot.val();
-});
 
-firebase.database().ref('users/' + user.uid + '/licence').on('value', function(snapshot) {
-  lic=snapshot.val();
-});
-
-firebase.database().ref('users/' + user.uid + '/vehicle_number').on('value', function(snapshot) {
-  veh=snapshot.val();
-});
-
-firebase.database().ref('users/' + user.uid + '/rc').on('value', function(snapshot) {
-  rcdoc=snapshot.val();
-});
-
-firebase.database().ref('users/' + user.uid + '/pollution').on('value', function(snapshot) {
-  pol=snapshot.val();
-});
 
 
 
@@ -156,10 +238,14 @@ firebase.database().ref('users/' + user.uid + '/pollution').on('value', function
       <Text style={styles.Heading}>
           YOUR UPLOADS
           </Text>
+          
+<Text style={styles.SubHeading}>
+         User ID : {usar.uid}
+        </Text>
 <Text style={styles.SubHeading}>
          Mobile Number:
         </Text>
-        <TextInput defaultValue={mob} style={styles.intake} />
+        <TextInput onChangeText={(mobs) => this.setState({mobs})} value={this.state.mobs} style={styles.intake} />
         <Text style={styles.SubHeading}>
          Licence Number:
         </Text>
@@ -171,9 +257,11 @@ firebase.database().ref('users/' + user.uid + '/pollution').on('value', function
         <Text style={styles.SubHeading}>
          RC:
         </Text>
+        <TouchableOpacity onPress={()=>this.props.navigation.navigate('Imageselector')}>
         <Image 
           style={{width: '100%',height:500, resizeMode:'contain'}}
           source={{uri: rcdoc}}/>
+          </TouchableOpacity>
           <Text style={styles.SubHeading}>
          Pollution:
         </Text>
@@ -181,19 +269,17 @@ firebase.database().ref('users/' + user.uid + '/pollution').on('value', function
           style={{width: '100%',height:500, resizeMode:'contain'}}
           source={{uri: pol}}/>
         
-        <Button
-          onPress={
-            function writeUserData(mob,lic,veh,rcdoc,pol) {
-  firebase.database().ref('users/' + user.uid).set({
-
-    mobile:mob,
+        <Button style={styles.buttonsContainerL}
+          onPress={()=>{
+             firebase.database().ref('users/' + usar.uid).set({
+    mobile:this.state.mobs,
     licence:lic,
     vehicle_number:veh,
     pollution:pol,
     rc:rcdoc
   });
-}
-          }
+
+          }}
           title="EDIT/UPDATE"
           color="#841584"
         />
@@ -254,7 +340,6 @@ pollution:'http://184ynl3xrypi2ruscv1a607s.wpengine.netdna-cdn.com/wp-content/up
       <KeyboardAvoidingView style={styles.wholeStyle} behavior="padding" enabled>
         <View style={styles.logoContainer}>
         <Image  style={styles.logo} source={require('./logo.png')}/>
-       
           <Text style={styles.logoText}>
             App made for Common people :)
             </Text>
@@ -289,14 +374,190 @@ pollution:'http://184ynl3xrypi2ruscv1a607s.wpengine.netdna-cdn.com/wp-content/up
   }
 }
 
+class Imageselectorscreen extends React.Component {
+    state = {
+    image: null,
+    uploading: false,
+  };
 
+  render() {
+    let { image } = this.state;
+
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text
+          style={{
+            fontSize: 20,
+            marginBottom: 20,
+            textAlign: 'center',
+            marginHorizontal: 15,
+          }}>
+          Example: Upload ImagePicker result
+        </Text>
+
+        <Button
+          onPress={this._pickImage}
+          title="Pick an image from camera roll"
+        />
+
+        <Button onPress={this._takePhoto} title="Take a photo" />
+
+        {this._maybeRenderImage()}
+        {this._maybeRenderUploadingOverlay()}
+
+        <StatusBar barStyle="default" />
+      </View>
+    );
+  }
+
+  _maybeRenderUploadingOverlay = () => {
+    if (this.state.uploading) {
+      return (
+        <View
+          style={[
+            StyleSheet.absoluteFill,
+            {
+              backgroundColor: 'rgba(0,0,0,0.4)',
+              alignItems: 'center',
+              justifyContent: 'center',
+            },
+          ]}>
+          <ActivityIndicator color="#fff" animating size="large" />
+        </View>
+      );
+    }
+  };
+
+  _maybeRenderImage = () => {
+    let { image } = this.state;
+    if (!image) {
+      return;
+    }
+
+     return (
+      <View
+        style={{
+          marginTop: 30,
+          width: 250,
+          borderRadius: 3,
+          elevation: 2,
+          shadowColor: 'rgba(0,0,0,1)',
+          shadowOpacity: 0.2,
+          shadowOffset: { width: 4, height: 4 },
+          shadowRadius: 5,
+        }}>
+        <View
+          style={{
+            borderTopRightRadius: 3,
+            borderTopLeftRadius: 3,
+            overflow: 'hidden',
+          }}>
+          <Image source={{ uri: image }} style={{ width: 250, height: 250 }} />
+        </View>
+<Button title="SUBMIT" onPress={()=>{
+  rcdoc=image;
+  this.props.navigation.navigate('Userloggedin');
+}}/>
+      </View>
+    );
+
+  };
+
+  _share = () => {
+    Share.share({
+      message: this.state.image,
+      title: 'Check out this photo',
+      url: this.state.image,
+    });
+  };
+
+  _copyToClipboard = () => {
+    Clipboard.setString(this.state.image);
+    alert('Copied image URL to clipboard');
+  };
+
+  _takePhoto = async () => {
+    let pickerResult = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+    });
+
+    this._handleImagePicked(pickerResult);
+  };
+
+  _pickImage = async () => {
+    let pickerResult = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+    });
+
+    this._handleImagePicked(pickerResult);
+  };
+
+  _handleImagePicked = async pickerResult => {
+    let uploadResponse, uploadResult;
+
+    try {
+      this.setState({ uploading: true });
+
+      if (!pickerResult.cancelled) {
+        uploadResponse = await uploadImageAsync(pickerResult.uri);
+        uploadResult = await uploadResponse.json();
+        this.setState({ image: uploadResult.location });
+      }
+    } catch (e) {
+      console.log({ uploadResponse });
+      console.log({ uploadResult });
+      console.log({ e });
+      alert('Upload failed, sorry :(');
+    } finally {
+      this.setState({ uploading: false });
+    }
+  };
+}
+
+
+async function uploadImageAsync(uri) {
+  let apiUrl = 'https://file-upload-example-backend-dkhqoilqqn.now.sh/upload';
+
+  // Note:
+  // Uncomment this if you want to experiment with local server
+  //
+  // if (Constants.isDevice) {
+  //   apiUrl = `https://your-ngrok-subdomain.ngrok.io/upload`;
+  // } else {
+  //   apiUrl = `http://localhost:3000/upload`
+  // }
+
+  let uriParts = uri.split('.');
+  let fileType = uriParts[uriParts.length - 1];
+
+  let formData = new FormData();
+  formData.append('photo', {
+    uri,
+    name: `photo.${fileType}`,
+    type: `image/${fileType}`,
+  });
+
+  let options = {
+    method: 'POST',
+    body: formData,
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+  return fetch(apiUrl, options);
+}
 
 const RootStack = createStackNavigator(
   {
     Home: HomeScreen,
     Userlogin: UserloginScreen,
     Userloggedin:UserLoggedInScreen,
-    Moderatorlogin:SigninForm
+    Moderatorlogin:SigninForm,
+    Usertomod:UserToModDetail,
+    Imageselector:Imageselectorscreen
   },
   {
     initialRouteName: 'Home',
@@ -350,6 +611,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginTop:10,
     padding:10
+  },
+    intake:{
+    height:40,
+    backgroundColor:'white',
+    marginBottom:20,
+    color:'black',
+    fontSize:18
   },
   logoHeader:{
     fontSize:17,
