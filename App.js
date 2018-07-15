@@ -320,8 +320,18 @@ loginPress(){
   }
 );
 
-this.props.navigation.push('Userloggedin')
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    this.props.navigation.push('Userloggedin')
+  }});
 }
+//this.props.navigation.push('Userloggedin')
+// firebase.auth().onAuthStateChanged(user => {
+//       this.props.navigation.navigate(user ? 'Main' : 'SignUp')
+//     })
+//   }
+// }
+
 
 signupPress(){
   const { email , password}= this.state;
