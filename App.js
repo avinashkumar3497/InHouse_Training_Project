@@ -28,7 +28,8 @@ import Exponent, { Constants, ImagePicker, registerRootComponent } from 'expo';
   //firebase.initializeApp(config);
   //!firebase.apps.length ? firebase.initializeApp(config) : firebase.app();
 
-  var mob='null',lic='null',veh='null',rcdoc='null',pol='null',userid='';
+  var mob='null',lic='null',veh='null',rcdoc='null',pol='null',userid='',imgflag;
+  //imgflag tells that which image url is required(rc/pol) to imageselector
 
 class HomeScreen extends React.Component {
   render() {
@@ -222,7 +223,7 @@ firebase.database().ref('users/' + usar.uid + '/rc').on('value', function(snapsh
 firebase.database().ref('users/' + usar.uid + '/pollution').on('value', function(snapshot) {
   pol=snapshot.val();
 });
-     this.state={ mobs:mob,lics:'',vehs:'',rcdocs:'',pols:'',error:''}
+     this.state={ mobs:mob,lics:lic,vehs:veh,rcdocs:'',pols:'',error:''}
   //   //this.signinPress=this.signinPress.bind(this);
 
      }
@@ -250,31 +251,41 @@ firebase.database().ref('users/' + usar.uid + '/pollution').on('value', function
         <Text style={styles.SubHeading}>
          Licence Number:
         </Text>
-        <TextInput defaultValue={lic} style={styles.intake} />
+        <TextInput onChangeText={(lics) => this.setState({lics})} value={this.state.lics} style={styles.intake} />
          <Text style={styles.SubHeading}>
          Vehicle Number:
         </Text>
-        <TextInput defaultValue={veh} style={styles.intake} />
+        <TextInput onChangeText={(vehs) => this.setState({vehs})} value={this.state.vehs} style={styles.intake} />
         <Text style={styles.SubHeading}>
          RC:
         </Text>
-        <TouchableOpacity onPress={()=>this.props.navigation.navigate('Imageselector')}>
+        <TouchableOpacity onPress={()=>{
+          imgflag='r'
+          this.props.navigation.navigate('Imageselector')
+        }
+        }>
         <Image 
           style={{width: '100%',height:500, resizeMode:'contain'}}
-          source={{uri: this.props.navigation.getParam('RegC',rcdoc)}} /*loadingIndicatorSource*//>
+          source={{uri: this.props.navigation.getParam('rcURL',rcdoc)}}/>
           </TouchableOpacity>
           <Text style={styles.SubHeading}>
          Pollution:
         </Text>
+        <TouchableOpacity onPress={()=>{
+          imgflag='p'
+          this.props.navigation.navigate('Imageselector')
+        }
+        }>
         <Image 
           style={{width: '100%',height:500, resizeMode:'contain'}}
-          source={{uri: pol}}/>
+          source={{uri: this.props.navigation.getParam('polURL',pol)}}/>
+          </TouchableOpacity>
         
         <TouchableOpacity onPress={()=>{
              firebase.database().ref('users/' + usar.uid).set({
     mobile:this.state.mobs,
-    licence:lic,
-    vehicle_number:veh,
+    licence:this.state.lics,
+    vehicle_number:this.state.vehs,
     pollution:pol,
     rc:rcdoc
   });
@@ -458,8 +469,17 @@ class Imageselectorscreen extends React.Component {
           <Image source={{ uri: image }} style={{ width: 250, height: 250 }} />
         </View>
 <Button title="SUBMIT" onPress={()=>{
+  if(imgflag=='r')
+  {
   rcdoc=image;
-  this.props.navigation.navigate('Userloggedin',{'RegC':image});
+  this.props.navigation.navigate('Userloggedin',{'rcURL':image});
+  }
+    else
+  {
+  pol=image;
+  this.props.navigation.navigate('Userloggedin',{'polURL':image});
+  }
+  
 }}/>
       </View>
     );
