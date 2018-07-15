@@ -269,8 +269,7 @@ firebase.database().ref('users/' + usar.uid + '/pollution').on('value', function
           style={{width: '100%',height:500, resizeMode:'contain'}}
           source={{uri: pol}}/>
         
-        <Button style={styles.buttonsContainerL}
-          onPress={()=>{
+        <TouchableOpacity onPress={()=>{
              firebase.database().ref('users/' + usar.uid).set({
     mobile:this.state.mobs,
     licence:lic,
@@ -279,10 +278,13 @@ firebase.database().ref('users/' + usar.uid + '/pollution').on('value', function
     rc:rcdoc
   });
 
-          }}
-          title="EDIT/UPDATE"
-          color="#841584"
-        />
+          }} style={styles.buttonsContainerL}>
+          <Text style={styles.textContainerLogin}>
+            EDIT/UPDATE
+          </Text>
+        </TouchableOpacity>
+
+        <View />
 
         </ScrollView>
     );
@@ -610,6 +612,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     marginTop:10,
+    marginBottom:10,
     padding:10
   },
     intake:{
