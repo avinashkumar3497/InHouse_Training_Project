@@ -234,7 +234,7 @@ firebase.database().ref('users/' + usar.uid + '/pollution').on('value', function
 
 
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container} keyboardShouldPersistTaps='always'>
       <Text style={styles.Heading}>
           YOUR UPLOADS
           </Text>
