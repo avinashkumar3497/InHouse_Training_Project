@@ -224,6 +224,7 @@ firebase.database().ref('users/' + usar.uid + '/pollution').on('value', function
 });
      this.state={ mobs:mob,lics:'',vehs:'',rcdocs:'',pols:'',error:''}
   //   //this.signinPress=this.signinPress.bind(this);
+
      }
 
   render() {
@@ -260,7 +261,7 @@ firebase.database().ref('users/' + usar.uid + '/pollution').on('value', function
         <TouchableOpacity onPress={()=>this.props.navigation.navigate('Imageselector')}>
         <Image 
           style={{width: '100%',height:500, resizeMode:'contain'}}
-          source={{uri: rcdoc}}/>
+          source={{uri: this.props.navigation.getParam('RegC',rcdoc)}} /*loadingIndicatorSource*//>
           </TouchableOpacity>
           <Text style={styles.SubHeading}>
          Pollution:
@@ -458,7 +459,7 @@ class Imageselectorscreen extends React.Component {
         </View>
 <Button title="SUBMIT" onPress={()=>{
   rcdoc=image;
-  this.props.navigation.navigate('Userloggedin');
+  this.props.navigation.navigate('Userloggedin',{'RegC':image});
 }}/>
       </View>
     );
